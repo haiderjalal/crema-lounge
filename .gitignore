@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Raw Instagram asset archive (source photos for the curated set in public/images)
+.instagram-source/

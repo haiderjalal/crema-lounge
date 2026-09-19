@@ -1,26 +1,128 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------
+   Crema Lounge design tokens.
+   Palette sampled from the venue's own identity: the forest-green
+   logo ground, its cream lettering, and the gold storefront neon.
+   --------------------------------------------------------------- */
+@theme {
+  --color-forest-950: #0f1d17;
+  --color-forest-900: #16281f;
+  --color-forest-800: #1e3529;
+  --color-forest-700: #2e4a3e;
+  --color-forest-600: #3d5e4f;
+  --color-forest-500: #517665;
+
+  --color-cream-50: #fbf8f1;
+  --color-cream-100: #f5efe2;
+  --color-cream-200: #efe6d6;
+  --color-cream-300: #e2d4bd;
+  --color-cream-400: #cbb897;
+
+  --color-gold-300: #f8d581;
+  --color-gold-400: #f5c242;
+  --color-gold-500: #e0a92c;
+  --color-gold-600: #b8851f;
+
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --shell: var(--color-forest-950);
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  border-color: color-mix(in oklab, var(--color-cream-200) 12%, transparent);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  /* Lenis drives scrolling; native smooth would fight it. */
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+  /* `clip` rather than `hidden`: it contains the scroll-driven horizontal
+     rails without turning these elements into scroll containers, which would
+     break `position: sticky` for their descendants. */
+  overflow-x: clip;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--shell);
+  color: var(--color-cream-200);
+  font-family: var(--font-sans);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background-color: var(--color-gold-400);
+  color: var(--color-forest-950);
+}
+
+/* Visible, on-brand focus ring for keyboard users. */
+:focus-visible {
+  outline: 2px solid var(--color-gold-400);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* --- Utilities ------------------------------------------------- */
+
+.u-container {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 80rem;
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .u-container {
+    padding-inline: 2.5rem;
+  }
+}
+
+/* Small caps label used across section headers. */
+.u-eyebrow {
+  font-size: 0.6875rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--color-gold-400);
+}
+
+/* Warm grain overlay — keeps large flat greens from banding. */
+.u-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Hairline divider that fades at both ends. */
+.u-rule {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklab, var(--color-cream-200) 22%, transparent),
+    transparent
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
