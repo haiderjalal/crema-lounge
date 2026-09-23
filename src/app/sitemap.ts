@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { arItems } from "@/data/menu";
 import { site } from "@/data/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -12,5 +13,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
+    ...arItems.map((item) => ({
+      url: `${site.url}/menu/${item.model.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
   ];
 }

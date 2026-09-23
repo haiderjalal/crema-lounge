@@ -94,6 +94,26 @@ case, and `globals.css` collapses CSS transitions to near-zero.
   (gitignored) so shots can be swapped without re-collecting.
 - **Events** — every entry has actually run at the lounge.
 
+## 3D / AR menu
+
+Any menu item with a `model` field in `src/data/menu.ts` gets a card at the top
+of `/menu`, a "View in 3D & AR" link in the list, and its own page at
+`/menu/<slug>` — the URL a table or dish QR code should point at. The page
+spins the dish in 3D and places it on the table at true size (Android: Scene
+Viewer / WebXR, iOS: Quick Look). `@google/model-viewer` is imported only on
+that page, so `/menu` never downloads it.
+
+**Hi Tea Platter** — `public/models/hi-tea-platter.glb` (~1.1 MB, 30 × 32 ×
+32 cm) is built by `tools/build_hitea.py` from the platter videos in `video/`:
+a modelled three-tier stand and stoneware trays, with each dish shaped and
+textured from crops of those frames (saved in `assets/hitea/`, so the build
+still runs without the videos). To upgrade to a real photogrammetry scan,
+drop it in at the same path; no code change needed.
+
+```bash
+python tools/build_hitea.py
+```
+
 ## Before going live
 
 - [ ] Point `site.url` in `src/data/site.ts` at the real domain (currently
@@ -103,3 +123,6 @@ case, and `globals.css` collapses CSS transitions to near-zero.
 - [ ] Re-export the logo as a transparent PNG/SVG if one exists. The current
       mark is the Instagram avatar, circle-cropped to hide its square ground.
 - [ ] Add a real favicon and an OG image sized 1200×630.
+- [ ] Hi Tea Platter: confirm the price (shown as "Ask for price" — it isn't
+      on Instagram) and the item list in its description, which was read off
+      the videos.

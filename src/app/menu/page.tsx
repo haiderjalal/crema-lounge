@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { MenuBoard } from "@/components/sections/MenuBoard";
 import { Reveal, RevealLines } from "@/components/shared/Reveal";
-import { menu } from "@/data/menu";
+import { arItems, formatPrice, menu } from "@/data/menu";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
@@ -59,6 +60,45 @@ export default function MenuPage() {
           </Reveal>
         </div>
       </header>
+
+      {/* Dishes with a true-scale 3D model — the QR codes on the tables land here. */}
+      <section aria-labelledby="ar-heading" className="u-container pb-16">
+        <div className="flex items-baseline gap-6">
+          <h2 id="ar-heading" className="u-eyebrow">
+            See it on your table
+          </h2>
+          <span className="u-rule flex-1" aria-hidden="true" />
+        </div>
+        <ul className="mt-6 grid gap-5 md:grid-cols-2">
+          {arItems.map((item) => (
+            <li key={item.model.slug}>
+              <Link
+                href={`/menu/${item.model.slug}`}
+                className="group grid grid-cols-[7.5rem_1fr] overflow-hidden rounded-2xl border border-cream-200/10 bg-forest-900 transition-colors hover:border-gold-400/40 sm:grid-cols-[10rem_1fr]"
+              >
+                <div className="relative aspect-[4/5]">
+                  <Image
+                    src={item.model.photo}
+                    alt={item.model.photoAlt}
+                    fill
+                    sizes="160px"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
+                <div className="flex flex-col justify-center gap-2 p-5">
+                  <h3 className="font-display text-xl text-cream-100">{item.name}</h3>
+                  <p className="text-sm text-gold-400 tabular-nums">
+                    {formatPrice(item.price, item.from)}
+                  </p>
+                  <span className="mt-2 inline-flex w-fit items-center gap-2 rounded-full bg-gold-400 px-4 py-2 text-[0.6875rem] font-semibold tracking-[0.16em] text-forest-950 uppercase">
+                    View in 3D &amp; AR
+                  </span>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <MenuBoard />
     </>

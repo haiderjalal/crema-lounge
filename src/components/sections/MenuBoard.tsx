@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { formatPrice, menu, menuGroups } from "@/data/menu";
@@ -119,6 +120,14 @@ export function MenuBoard() {
                       <p className="mt-2 max-w-md text-sm leading-relaxed text-cream-200/50">
                         {item.description}
                       </p>
+                      {item.model && (
+                        <Link
+                          href={`/menu/${item.model.slug}`}
+                          className="mt-3 inline-flex items-center gap-2 rounded-full border border-gold-400/50 px-3.5 py-1.5 text-[0.625rem] font-semibold tracking-[0.16em] text-gold-400 uppercase transition-colors hover:bg-gold-400 hover:text-forest-950"
+                        >
+                          View in 3D &amp; AR
+                        </Link>
+                      )}
                     </motion.li>
                   ))}
                 </ul>

@@ -2,13 +2,25 @@
  * Crema Lounge menu.
  * Items and prices mirror the venue's published listing (PKR).
  * `from` marks items priced by size/portion — the value is the starting price.
+ * `price: null` means the venue has not published one yet — shown as "Ask for price".
  */
+
+/** A true-scale 3D model for the AR menu. Paths are relative to /public. */
+export interface DishModel {
+  /** URL segment for /ar-menu/<slug> — also what a dish QR code points at. */
+  readonly slug: string;
+  readonly src: string;
+  /** Real photo of the dish: list card image and 3D loading poster. */
+  readonly photo: string;
+  readonly photoAlt: string;
+}
 
 export interface MenuItem {
   readonly name: string;
   readonly description: string;
-  readonly price: number;
+  readonly price: number | null;
   readonly from?: boolean;
+  readonly model?: DishModel;
 }
 
 export interface MenuCategory {
@@ -291,6 +303,27 @@ export const menu: readonly MenuCategory[] = [
     ],
   },
   {
+    id: "hi-tea",
+    name: "Hi Tea",
+    group: "Kitchen",
+    items: [
+      {
+        name: "Hi Tea Platter",
+        description:
+          "Three tiers to share: garden salad, croquettes and carrot cake; chicken sliders, a crumbed tender and finger sandwiches; penne arrabbiata, a grilled wrap and wings with a creamy dip.",
+        // PLACEHOLDER: price not published on Instagram — confirm with the venue.
+        price: null,
+        model: {
+          slug: "hi-tea-platter",
+          src: "/models/hi-tea-platter.glb",
+          photo: "/images/hi-tea-platter.jpg",
+          photoAlt:
+            "The Crema Lounge Hi Tea Platter on its three-tier black stand",
+        },
+      },
+    ],
+  },
+  {
     id: "appetizers",
     name: "Appetizers",
     group: "Kitchen",
@@ -511,7 +544,17 @@ export const signatureItemNames: readonly string[] = [
   "Aeropress",
 ] as const;
 
-export function formatPrice(price: number, from?: boolean): string {
+/** Every dish that has a 3D model, in menu order. */
+export const arItems: readonly (MenuItem & { readonly model: DishModel })[] =
+  menu.flatMap((category) =>
+    category.items.filter(
+      (item): item is MenuItem & { readonly model: DishModel } =>
+        item.model !== undefined,
+    ),
+  );
+
+export function formatPrice(price: number | null, from?: boolean): string {
+  if (price === null) return "Ask for price";
   const value = `Rs. ${price.toLocaleString("en-PK")}`;
   return from ? `from ${value}` : value;
 }

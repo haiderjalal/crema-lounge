@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Raw Instagram asset archive (source photos for the curated set in public/images)
 .instagram-source/
+
+# raw source footage (230 MB) - crops live in assets/hitea/
+/video/
