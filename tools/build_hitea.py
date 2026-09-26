@@ -4,7 +4,7 @@ Crema Lounge Hi Tea Platter, textured from the reference videos in video/.
 
     python tools/build_hitea.py
 
-Needs: numpy, opencv-python-headless, pillow, trimesh.
+Needs: numpy, opencv-python-headless, pillow, trimesh, scipy; npx for geometry quantisation.
 If video/ is absent, the crops already saved in assets/hitea/ are used.
 
 Geometry is built, not scanned: every food item is a heightfield dome over a
@@ -19,7 +19,9 @@ import io
 import json
 import math
 import os
+import shutil
 import struct
+import subprocess
 from pathlib import Path
 
 import cv2
@@ -436,6 +438,31 @@ def jpeg_textures(glb: bytes, quality: int = 80) -> bytes:
     )
 
 
+def export_glb(scene: trimesh.Scene) -> bytes:
+    """GLB with smooth normals. Lathe axis points only touch collapsed triangles, so give them +y."""
+    for mesh in scene.geometry.values():
+        normals = mesh.vertex_normals.copy()
+        normals[np.linalg.norm(normals, axis=1) < 1e-6] = [0.0, 1.0, 0.0]
+        mesh.vertex_normals = normals
+    return jpeg_textures(scene.export(file_type="glb", include_normals=True))
+
+
+def compress(path: Path) -> None:
+    """Quantise geometry (16-bit positions/normals/UVs and indices) — no decoder needed at runtime."""
+    npx = shutil.which("npx")
+    if not npx:
+        print("npx not found - skipping geometry quantisation")
+        return
+    # Writing in place intermittently aborts the CLI on Windows — go via a temp file.
+    tmp = path.with_suffix(".tmp.glb")
+    subprocess.run(
+        [npx, "-y", "@gltf-transform/cli@4", "optimize", str(path), str(tmp), "--compress", "quantize",
+         "--texture-compress", "false", "--simplify", "false", "--instance", "false"],
+        check=True, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    )
+    tmp.replace(path)
+
+
 def build() -> None:
     if VIDEO.exists():
         extract_crops()
@@ -482,7 +509,8 @@ def build() -> None:
     for i, m in enumerate(parts):
         scene.add_geometry(m, node_name=f"part_{i}")
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_bytes(jpeg_textures(scene.export(file_type="glb")))
+    OUT.write_bytes(export_glb(scene))
+    compress(OUT)
     lo, hi = scene.bounds
     print(f"wrote {OUT.relative_to(ROOT)}  {OUT.stat().st_size / 1024:.0f} KB  size(m)={np.round(hi - lo, 3)}  tris={sum(len(m.faces) for m in parts)}")
 

@@ -6,6 +6,8 @@ interface DishViewerProps {
   readonly src: string;
   readonly poster: string;
   readonly alt: string;
+  readonly cameraOrbit?: string;
+  readonly cameraTarget?: string;
 }
 
 type Status = "loading" | "ready" | "error";
@@ -20,7 +22,13 @@ interface ModelViewerElement extends HTMLElement {
  * only when this component mounts, so the menu itself never pays for it.
  * The model is authored in metres, so AR with ar-scale="fixed" is life-size.
  */
-export function DishViewer({ src, poster, alt }: DishViewerProps) {
+export function DishViewer({
+  src,
+  poster,
+  alt,
+  cameraOrbit = "20deg 58deg 0.58m",
+  cameraTarget = "0m 0.015m 0m",
+}: DishViewerProps) {
   const ref = useRef<HTMLElement>(null);
   const [status, setStatus] = useState<Status>("loading");
   const [progress, setProgress] = useState(0);
@@ -66,10 +74,10 @@ export function DishViewer({ src, poster, alt }: DishViewerProps) {
         alt={alt}
         camera-controls=""
         touch-action="pan-y"
-        camera-orbit="18deg 68deg 1.05m"
-        camera-target="0m 0.15m 0m"
+        camera-orbit={cameraOrbit}
+        camera-target={cameraTarget}
         field-of-view="30deg"
-        min-camera-orbit="auto 0deg 0.55m"
+        min-camera-orbit="auto 0deg 0.4m"
         max-camera-orbit="auto 95deg 1.8m"
         auto-rotate=""
         auto-rotate-delay="1200"

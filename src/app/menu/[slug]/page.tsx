@@ -53,7 +53,13 @@ export default async function DishPage({ params }: DishPageProps) {
       </Link>
 
       <div className="mt-6 grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-center lg:gap-16">
-        <DishViewer src={dish.model.src} poster={dish.model.photo} alt={dish.model.photoAlt} />
+        <DishViewer
+          src={dish.model.src}
+          poster={dish.model.photo}
+          alt={dish.model.photoAlt}
+          cameraOrbit={dish.model.cameraOrbit}
+          cameraTarget={dish.model.cameraTarget}
+        />
 
         <div>
           <p className="u-eyebrow">3D · AR · True size</p>
@@ -74,7 +80,7 @@ export default async function DishPage({ params }: DishPageProps) {
             </li>
             <li>
               <span className="mr-3 text-gold-400 tabular-nums">03</span>
-              The platter appears at its real size — walk around it, then ask your server to order.
+              The dish appears at its real size — walk around it, then ask your server to order.
             </li>
           </ol>
         </div>

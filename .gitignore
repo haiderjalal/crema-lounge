@@ -45,3 +45,4 @@ next-env.d.ts
 
 # raw source footage (230 MB) - crops live in assets/hitea/
 /video/
+__pycache__/

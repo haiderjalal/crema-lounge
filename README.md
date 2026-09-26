@@ -114,6 +114,19 @@ drop it in at the same path; no code change needed.
 python tools/build_hitea.py
 ```
 
+**Plated dishes** — Chicken Supreme and Eggplant Parmigiana (~1.1 MB each,
+27 cm plates) are built by `tools/build_plates.py` from
+`video/<Dish name>.MOV`. It takes the overhead first frame, finds the plate's
+brown rim and warps it into a true top-down photo (`assets/<slug>/top.jpg`),
+models the plate, then raises each traced food zone (sauce, fries, pasta…)
+as relief under that photo. To add a dish: film it the same way (start
+straight overhead on a plain table, then circle it), add a `Dish` entry with
+its food zones, and add a `model` to the item in `src/data/menu.ts`.
+
+```bash
+python tools/build_plates.py
+```
+
 ## Before going live
 
 - [ ] Point `site.url` in `src/data/site.ts` at the real domain (currently

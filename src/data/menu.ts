@@ -13,6 +13,9 @@ export interface DishModel {
   /** Real photo of the dish: list card image and 3D loading poster. */
   readonly photo: string;
   readonly photoAlt: string;
+  /** Starting view, model-viewer syntax. Defaults suit a single plate. */
+  readonly cameraOrbit?: string;
+  readonly cameraTarget?: string;
 }
 
 export interface MenuItem {
@@ -319,6 +322,8 @@ export const menu: readonly MenuCategory[] = [
           photo: "/images/hi-tea-platter.jpg",
           photoAlt:
             "The Crema Lounge Hi Tea Platter on its three-tier black stand",
+          cameraOrbit: "18deg 68deg 1.05m",
+          cameraTarget: "0m 0.15m 0m",
         },
       },
     ],
@@ -440,11 +445,25 @@ export const menu: readonly MenuCategory[] = [
         name: "Eggplant Parmigiana",
         description: "Baked eggplant layered with tomato, mozzarella and parmesan.",
         price: 1800,
+        model: {
+          slug: "eggplant-parmigiana",
+          src: "/models/eggplant-parmigiana.glb",
+          photo: "/images/eggplant-parmigiana.jpg",
+          photoAlt:
+            "Eggplant Parmigiana under baked mozzarella, with fettuccine in a pink sauce",
+        },
       },
       {
         name: "Chicken Supreme",
         description: "Tender chicken breast in a creamy sauce.",
         price: 1850,
+        model: {
+          slug: "chicken-supreme",
+          src: "/models/chicken-supreme.glb",
+          photo: "/images/chicken-supreme.jpg",
+          photoAlt:
+            "Chicken Supreme in a creamy sauce with fries and sautéed vegetables",
+        },
       },
     ],
   },
